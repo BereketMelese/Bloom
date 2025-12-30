@@ -53,7 +53,6 @@ commentSchema.post("findOneAndDelete", async function (doc) {
     const Post = mongoose.model("Post");
     // Use doc.post to find the correct post to decrement
     await Post.decrementCounter(doc.post, "commentsCount");
-    console.log(`Decremented commentsCount for post: ${doc.post}`);
   }
 });
 
