@@ -13,7 +13,7 @@ export const getUsers = async (req, res) => {
 
     const users = await User.find(query)
       .select(
-        "username avatar bio followersCount followingCount postsCount streak"
+        "username avatar bio followersCount followingCount postsCount streak activityHeatmap"
       )
       .skip(skip)
       .limit(Number(limit));
@@ -38,7 +38,7 @@ export const getUsers = async (req, res) => {
 export const getUser = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select(
-      "username avatar bio followersCount followingCount postsCount streak createdAt"
+      "username avatar bio followersCount followingCount postsCount streak activityHeatmap createdAt"
     );
 
     if (!user) {
@@ -66,7 +66,7 @@ export const getUser = async (req, res) => {
       user: {
         ...user.toObject(),
         isFollowing,
-        isMe: req.user._id.toString() === req.params.id,
+        isMe: req.user ? req.user._id.toString() === req.params.id : false,
       },
       recentPosts,
     });
@@ -87,6 +87,7 @@ export const getFollowers = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
+      .populate("follower", "username avatar")
       .lean();
 
     const totalFollowers = await Follow.countDocuments({
@@ -119,6 +120,7 @@ export const getFollowing = async (req, res) => {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
+      .populate("following", "username avatar")
       .lean();
 
     const totalFollowing = await Follow.countDocuments({
