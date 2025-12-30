@@ -280,6 +280,15 @@ export const toggleLike = async (req, res) => {
       type: "like",
     });
 
+    const post = await Post.findById(postId);
+
+    await Notification.createNotification({
+      recipient: post.author,
+      sender: userId,
+      type: "like",
+      post: postId,
+    });
+
     res.status(201).json({
       success: true,
       message: "Post liked",

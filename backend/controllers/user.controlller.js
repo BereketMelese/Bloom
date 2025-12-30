@@ -1,4 +1,4 @@
-import { Follow, Post, User } from "../models/index.js";
+import { Follow, Post, User, Notification } from "../models/index.js";
 
 export const getUsers = async (req, res) => {
   try {
@@ -171,6 +171,12 @@ export const toggleFollow = async (req, res) => {
         following: targetUserId,
       });
       await newFollow.save();
+
+      await Notification.createNotification({
+        recipient: targetUserId,
+        sender: req.user._id,
+        type: "follow",
+      });
 
       return res.status(201).json({
         success: true,

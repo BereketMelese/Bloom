@@ -48,9 +48,13 @@ commentSchema.post("save", async function (doc) {
   await Post.incrementCounter(doc.post, "commentsCount");
 });
 
-commentSchema.post("remove", async function (doc) {
-  const Post = mongoose.model("Post");
-  await Post.decrementCounter(doc.post, "commentsCount");
+commentSchema.post("findOneAndDelete", async function (doc) {
+  if (doc) {
+    const Post = mongoose.model("Post");
+    // Use doc.post to find the correct post to decrement
+    await Post.decrementCounter(doc.post, "commentsCount");
+    console.log(`Decremented commentsCount for post: ${doc.post}`);
+  }
 });
 
 // Static methods
