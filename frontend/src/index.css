@@ -1,0 +1,36 @@
+/* src/index.css */
+@import "tailwindcss";
+@plugin "daisyui" {
+  themes:
+    winter --default,
+    night --prefersdark;
+}
+
+/* Your custom styles */
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply font-sans bg-base-100 text-base-content;
+  }
+
+  h1 {
+    @apply text-4xl font-bold;
+  }
+
+  h2 {
+    @apply text-3xl font-semibold;
+  }
+
+  h3 {
+    @apply text-2xl font-semibold;
+  }
+}
+
+@layer components {
+  .btn-momentum {
+    @apply btn bg-[#6366f1] border-[#6366f1] hover:bg-[#4f46e5] hover:border-[#4f46e5];
+  }
+}
