@@ -22,7 +22,7 @@ interactionSchema.post("save", async function (doc) {
 });
 
 // --- DECREMENT ON DELETE ---
-interactionSchema.post("findOneAndDelete", async function () {
+interactionSchema.pre("findOneAndDelete", async function () {
   const doc = await this.model.findOne(this.getQuery());
   if (!doc) return;
 

@@ -56,11 +56,30 @@ export const getPosts = async (req, res) => {
       .limit(limit)
       .populate("author", "username avatar");
 
+    const postWithInteractions = await Promise.all(
+      posts.map(async (post) => {
+        const postObj = post.toObject();
+
+        const hasLiked = await Interaction.hasLiked(req.user?._id, post._id);
+
+        const hasBookmarked = await Interaction.hasBookmarked(
+          req.user?._id,
+          post._id
+        );
+
+        return {
+          ...postObj,
+          hasLiked,
+          hasBookmarked,
+        };
+      })
+    );
+
     const total = await Post.countDocuments(query);
 
     res.json({
       success: true,
-      posts,
+      posts: postWithInteractions,
       total,
       page: Number(page),
       pages: Math.ceil(total / limit),
@@ -87,9 +106,20 @@ export const getPost = async (req, res) => {
       });
     }
 
+    const postObj = post.toObject();
+
+    const hasLiked = await Interaction.hasLiked(req.user?._id, post._id);
+    const hasBookmarked = await Interaction.hasBookmarked(
+      req.user?._id,
+      post._id
+    );
+
+    postObj.hasLiked = hasLiked;
+    postObj.hasBookmarked = hasBookmarked;
+
     res.json({
       success: true,
-      post,
+      post: postObj,
     });
   } catch (error) {
     res.status(500).json({
@@ -201,9 +231,28 @@ export const getUserPosts = async (req, res) => {
       isArchived: false,
     });
 
+    const postWithInteractions = await Promise.all(
+      posts.map(async (post) => {
+        const postObj = post.toObject();
+
+        const hasLiked = await Interaction.hasLiked(req.user?._id, post._id);
+
+        const hasBookmarked = await Interaction.hasBookmarked(
+          req.user?._id,
+          post._id
+        );
+
+        return {
+          ...postObj,
+          hasLiked,
+          hasBookmarked,
+        };
+      })
+    );
+
     res.json({
       success: true,
-      posts,
+      posts: postWithInteractions,
       total,
       page: Number(page),
       pages: Math.ceil(total / limit),
@@ -218,7 +267,7 @@ export const getUserPosts = async (req, res) => {
 
 export const getFeed = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.body;
+    const { page = 1, limit = 10 } = req.query;
     const skip = (page - 1) * limit;
 
     const follows = await Follow.find({ follower: req.user.id });
@@ -235,6 +284,25 @@ export const getFeed = async (req, res) => {
       .limit(limit)
       .populate("author", "username avatar");
 
+    const postWithInteractions = await Promise.all(
+      posts.map(async (post) => {
+        const postObj = post.toObject();
+
+        const hasLiked = await Interaction.hasLiked(req.user?._id, post._id);
+
+        const hasBookmarked = await Interaction.hasBookmarked(
+          req.user?._id,
+          post._id
+        );
+
+        return {
+          ...postObj,
+          hasLiked,
+          hasBookmarked,
+        };
+      })
+    );
+
     const total = await Post.countDocuments({
       author: { $in: followingIds },
       isArchived: false,
@@ -242,7 +310,7 @@ export const getFeed = async (req, res) => {
 
     res.json({
       success: true,
-      posts,
+      posts: postWithInteractions,
       total,
       page: Number(page),
       pages: Math.ceil(total / limit),
@@ -269,6 +337,7 @@ export const toggleLike = async (req, res) => {
     if (existingLike) {
       await Interaction.findOneAndDelete({ _id: existingLike._id });
       return res.status(200).json({
+        success: true,
         liked: false,
         message: "Like removed",
       });
@@ -291,6 +360,7 @@ export const toggleLike = async (req, res) => {
 
     res.status(201).json({
       success: true,
+      liked: true,
       message: "Post liked",
     });
   } catch (error) {
@@ -328,6 +398,7 @@ export const toggleBookmark = async (req, res) => {
     });
 
     res.status(201).json({
+      success: true,
       bookmarked: true,
       message: "Post bookmarked",
     });
