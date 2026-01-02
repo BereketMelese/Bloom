@@ -1,16 +1,14 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 import { Outlet } from "react-router-dom";
 
 import api from "../service/api";
 import Navbar from "../components/common/Navbar";
+import MobileNavbar from "../components/common/MobileNavbar";
 
 const AppLayout = () => {
   const queryClient = useQueryClient();
 
-  const { data: user } = useQuery({
-    queryKey: ["authUser"],
-    retry: false,
-  });
+  const user = queryClient.getQueryData(["authUser"]);
 
   const logoutRequest = async () => {
     await api.post("/auth/logout");
@@ -21,10 +19,14 @@ const AppLayout = () => {
     queryClient.setQueriesData(["authUser"], null);
   };
   return (
-    <>
+    <div className="flex min-h-screen bg-base-100">
       <Navbar user={user} onLogout={logout} />
-      <Outlet />
-    </>
+      <main className="flex-1 overflow-y-auto">
+        <Outlet />
+      </main>
+
+      <MobileNavbar user={user} onLogout={logout} />
+    </div>
   );
 };
 
