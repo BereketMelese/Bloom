@@ -9,7 +9,7 @@ import LoadingSpinner from "../common/LoadingSpinner";
 import { FaRegHeart, FaHeart, FaRegComment, FaTrash } from "react-icons/fa";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 
-import CommentSection from "./CommentSection";
+import CommentSection from "../comments/CommentSection";
 
 const Post = ({ post }) => {
   const queryClient = useQueryClient();

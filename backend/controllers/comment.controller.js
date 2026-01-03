@@ -43,7 +43,7 @@ export const getComments = async (req, res) => {
     const { limit = 50 } = req.query;
 
     const comments = await Comment.getPostComments(req.params.id, limit);
-    const replies = [];
+    const replies = {};
 
     for (const comment of comments) {
       replies[comment._id] = await Comment.getReplies(comment._id);
