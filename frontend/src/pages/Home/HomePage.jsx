@@ -21,7 +21,7 @@ const HomePage = () => {
             For You
           </span>
           {feedType === "forYou" && (
-            <div className="absolute bottom-0 w-20 h-1 bg-primary rounded-t-full shadow-[0_-2px_10px_rgba(var(--p),0.5)]" />
+            <div className="absolute bottom-0 w-20 h-1 bg-red-400 rounded-t-full shadow-[0_-2px_10px_rgba(var(--p),0.5)]" />
           )}
         </button>
 
@@ -37,7 +37,7 @@ const HomePage = () => {
             Following
           </span>
           {feedType === "following" && (
-            <div className="absolute bottom-0 w-20 h-1 bg-primary rounded-t-full shadow-[0_-2px_10px_rgba(var(--p),0.5)]" />
+            <div className="absolute bottom-0 w-20 h-1 bg-red-400 rounded-t-full shadow-[0_-2px_10px_rgba(var(--p),0.5)]" />
           )}
         </button>
       </div>

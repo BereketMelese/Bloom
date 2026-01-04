@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 
 import api from "../service/api";
 import Navbar from "../components/common/Navbar";
+import RightSide from "../components/common/rightSide/RightSide";
 import MobileNavbar from "../components/common/MobileNavbar";
 
 const AppLayout = () => {
@@ -24,6 +25,7 @@ const AppLayout = () => {
       <main className="flex-1 overflow-y-auto">
         <Outlet />
       </main>
+      <RightSide />
 
       <MobileNavbar user={user} onLogout={logout} />
     </div>
