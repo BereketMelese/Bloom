@@ -193,3 +193,33 @@ export const toggleFollow = async (req, res) => {
     });
   }
 };
+
+export const getSuggestedUsers = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const followings = await Follow.getFollowing(userId);
+
+    const followedUserIds = followings.map((f) => f.following._id);
+
+    followedUserIds.push(userId);
+
+    const suggestedUsers = await User.find({
+      _id: { $nin: followedUserIds },
+    })
+      .select("username avatar bio followersCount")
+      .limit(5)
+      .lean();
+
+    res.json({
+      success: true,
+      users: suggestedUsers,
+    });
+  } catch (error) {
+    console.log("hello");
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};

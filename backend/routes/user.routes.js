@@ -2,6 +2,7 @@ import express from "express";
 import {
   getFollowers,
   getFollowing,
+  getSuggestedUsers,
   getUser,
   getUsers,
   toggleFollow,
@@ -12,6 +13,8 @@ import { checkUserExists } from "../middlewares/checkUserExists.js";
 const router = express.Router();
 
 router.get("/", protect, getUsers);
+router.get("/suggested", protect, getSuggestedUsers);
+
 router.get("/:id", protect, checkUserExists, getUser);
 router.get("/:id/followers", protect, checkUserExists, getFollowers);
 router.get("/:id/following", protect, checkUserExists, getFollowing);
